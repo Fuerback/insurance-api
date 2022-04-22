@@ -1,0 +1,155 @@
+openapi: 3.0.3
+info:
+  title: Insurance API
+  version: 1.0.0
+  description: |
+    The **Insurance API** is used to suggest the insurance plan ("economic", "regular", "responsible") corresponding to her risk profile.
+
+components:
+  schemas:
+    ErrorResponse:
+      type: object
+      description: The error response.
+      properties:
+        message:
+          type: string
+          example: Validation error
+
+    InsuranceSuggestion:
+      type: object
+      properties:
+        auto:
+          type: string
+          description: The suggest plan for auto
+          example: regular
+          enum:
+            - regular
+            - economic
+            - ineligible
+            - responsible
+        disability:
+          type: string
+          description: The suggest plan for disability
+          example: regular
+          enum:
+            - regular
+            - economic
+            - ineligible
+            - responsible
+        home:
+          type: string
+          description: The suggest plan for home
+          example: regular
+          enum:
+            - regular
+            - economic
+            - ineligible
+            - responsible
+        life:
+          type: string
+          description: The suggest plan for life
+          example: regular
+          enum:
+            - regular
+            - economic
+            - ineligible
+            - responsible
+      required:
+        - auto
+        - disability
+        - home
+        - life
+
+    PersonalInformation:
+      type: object
+      properties:
+        age:
+          type: integer
+          format: int
+          description: The user`s age.
+          example: 25
+          minimum: 0
+        dependents:
+          type: integer
+          format: int
+          description: The number of user`s dependets.
+          example: 1
+          minimum: 0
+        house:
+          type: object
+          properties:
+            ownership_status:
+              type: string
+              enum:
+                - owned
+                - mortgaged
+              example: owned
+        income:
+          type: integer
+          format: int
+          description: The user`s income.
+          example: 3000
+          minimum: 0
+        marital_status:
+          type: string
+          enum:
+            - married
+            - single
+          description: The user`s martial status
+          example: married
+        risk_questions:
+          description: Risk answers
+          type: array
+          items:
+            type: integer
+            minItems: 3
+            maxItems: 3
+        vehicle:
+          type: object
+          properties:
+            year:
+              type: integer
+              example: 2020
+              minimum: 0
+
+      required:
+        - age
+        - dependents
+        - income
+        - marital_status
+        - risk_questions
+
+
+
+paths:
+  /v1/evaluation:
+    post:
+      description: |
+        Evaluate the user`s information to suggest the insurance plans
+      tags:
+        - V1 - Evaluation
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonalInformation'
+
+      responses:
+        '200':
+          description: OK, when evaluation result is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsuranceSuggestion'
+        '400':
+          description: Bad request, validation error on request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal server error, validation error on request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
