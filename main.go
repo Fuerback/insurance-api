@@ -2,7 +2,8 @@ package main
 
 import (
 	"log"
-	"useorigin.com/insurance-api/internal/server"
+	"useorigin.com/insurance-api/evaluation"
+	"useorigin.com/insurance-api/server"
 )
 
 func main() {
@@ -10,6 +11,8 @@ func main() {
 
 	// TODO: add logging and config
 
-	s := server.NewServer()
+	evaluationHandler := evaluation.NewEvaluationHandler()
+
+	s := server.NewServer(evaluationHandler)
 	s.Run()
 }

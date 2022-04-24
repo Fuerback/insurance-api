@@ -35,7 +35,7 @@ func (c *evaluationHttpHandler) Evaluation(resp http.ResponseWriter, r *http.Req
 		resp.WriteHeader(http.StatusBadRequest)
 		// ajustar
 		//resp.Write([]byte(`{"message": "error unmarshalling the request"}`))
-		json.NewEncoder(resp).Encode(Errors{Message: err.Error()})
+		json.NewEncoder(resp).Encode(Error{Message: err.Error()})
 		return
 	}
 }
