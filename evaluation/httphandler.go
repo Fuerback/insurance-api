@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-playground/validator"
+	"useorigin.com/insurance-api/errors"
 )
 
 type EvaluationHttpHandler interface {
@@ -24,8 +25,7 @@ func (c *evaluationHttpHandler) Evaluation(resp http.ResponseWriter, r *http.Req
 	err := json.NewDecoder(r.Body).Decode(evaluation)
 	if err != nil {
 		resp.WriteHeader(http.StatusInternalServerError)
-		// ajustar
-		resp.Write([]byte(`{"message": "error unmarshalling the request"}`))
+		json.NewEncoder(resp).Encode(errors.NewError("error unmarshalling the request"))
 		return
 	}
 
@@ -33,9 +33,12 @@ func (c *evaluationHttpHandler) Evaluation(resp http.ResponseWriter, r *http.Req
 	err = v.Struct(evaluation)
 	if err != nil {
 		resp.WriteHeader(http.StatusBadRequest)
-		// ajustar
-		//resp.Write([]byte(`{"message": "error unmarshalling the request"}`))
-		json.NewEncoder(resp).Encode(Error{Message: err.Error()})
+		var error errors.Error
+		for _, err := range err.(validator.ValidationErrors) {
+			message := "validation error on " + err.Namespace()
+			error.Message = append(error.Message, message)
+		}
+		json.NewEncoder(resp).Encode(error)
 		return
 	}
 }
