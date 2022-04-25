@@ -10,16 +10,7 @@ import (
 func main() {
 	log.Println("Starting api server")
 
-	// TODO: add logging and config
-
-	rules := []evaluationservice.Rules{
-		evaluationservice.NewAutoRules(),
-		evaluationservice.NewHomeRules(),
-		evaluationservice.NewDisabilityRules(),
-		evaluationservice.NewLifeRules(),
-	}
-
-	service := evaluationservice.NewService(rules)
+	service := evaluationservice.NewService()
 	evaluationHandler := evaluationhttpadapter.NewEvaluationHandler(service)
 
 	s := server.NewServer(evaluationHandler)

@@ -1,30 +1,29 @@
 package evaluationservice
 
-type EvaluationService struct {
-	rules []Rules
-}
+import (
+	"useorigin.com/insurance-api/internal/service/rules"
+)
 
-func NewService(rules []Rules) InsuranceEvaluation {
-	return &EvaluationService{rules: rules}
+type EvaluationService struct{}
+
+func NewService() InsuranceEvaluation {
+	return &EvaluationService{}
 }
 
 func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceSuggest {
-	var initialRiskScore int
-	for _, answer := range userInformation.RiskQuestions {
-		initialRiskScore += answer
-	}
+	initialRiskScore := getInitialRiskScore(userInformation)
 
 	// rule engine domain
-	riskScore := &InsuranceScore{
-		Auto:       NewRiskScore(initialRiskScore),
-		Disability: NewRiskScore(initialRiskScore),
-		Home:       NewRiskScore(initialRiskScore),
-		Life:       NewRiskScore(initialRiskScore),
+	riskScore := &rules.InsuranceScore{
+		Auto:       rules.NewInsuranceProfile(initialRiskScore),
+		Disability: rules.NewInsuranceProfile(initialRiskScore),
+		Home:       rules.NewInsuranceProfile(initialRiskScore),
+		Life:       rules.NewInsuranceProfile(initialRiskScore),
 	}
 
-	// create a userInformation to rule engine?
-
-	for _, r := range e.rules {
+	// TODO: send 'rules1' and userProfile to GetInsuranceSuggest, it have to be responsible to Evaluate all rules and return an InsuranceSuggest (rules package can't have the service dependency)
+	rules1 := loadRules()
+	for _, r := range rules1 {
 		r.Evaluate(userInformation, riskScore)
 	}
 
@@ -34,4 +33,21 @@ func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceS
 		Home:       riskScore.Home.GetPlan(),
 		Life:       riskScore.Life.GetPlan(),
 	}
+}
+
+func loadRules() []rules.Rules {
+	return []rules.Rules{
+		rules.NewAutoRules(),
+		rules.NewHomeRules(),
+		rules.NewDisabilityRules(),
+		rules.NewLifeRules(),
+	}
+}
+
+func getInitialRiskScore(userInformation UserInformation) int {
+	var initialRiskScore int
+	for _, answer := range userInformation.RiskQuestions {
+		initialRiskScore += answer
+	}
+	return initialRiskScore
 }
