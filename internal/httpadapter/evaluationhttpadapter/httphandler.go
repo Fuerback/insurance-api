@@ -1,4 +1,4 @@
-package evaluation
+package evaluationhttpadapter
 
 import (
 	"encoding/json"
@@ -7,10 +7,6 @@ import (
 	"github.com/go-playground/validator"
 	"useorigin.com/insurance-api/errors"
 )
-
-type EvaluationHttpHandler interface {
-	Evaluation(resp http.ResponseWriter, r *http.Request)
-}
 
 type evaluationHttpHandler struct{}
 

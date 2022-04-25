@@ -10,7 +10,7 @@ import (
 	"os"
 	"testing"
 	"useorigin.com/insurance-api/errors"
-	"useorigin.com/insurance-api/evaluation"
+	"useorigin.com/insurance-api/internal/httpadapter/evaluationhttpadapter"
 	"useorigin.com/insurance-api/server"
 )
 
@@ -23,7 +23,7 @@ func TestMain(m *testing.M) {
 	serverURL = "http://localhost:8000" //os.Getenv("SERVER_URL")
 	evaluationURL = serverURL + "/evaluation"
 
-	go server.NewServer(evaluation.NewEvaluationHandler()).Run()
+	go server.NewServer(evaluationhttpadapter.NewEvaluationHandler()).Run()
 
 	os.Exit(m.Run())
 }
@@ -31,60 +31,60 @@ func TestMain(m *testing.M) {
 func TestIntMinTableDriven(t *testing.T) {
 	var tests = []struct {
 		name                string
-		eval                evaluation.Evaluation
+		eval                evaluationhttpadapter.Evaluation
 		want, errorMessages int
 	}{
 		{
 			"single with no house and vehicle",
-			evaluation.NewEvaluation(1, 1, 1, "single", []bool{true, false, true}, nil, nil),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, "single", []uint8{1, 0, 1}, nil, nil),
 			http.StatusOK,
 			0,
 		},
 		{
 			"married with house and vehicle",
-			evaluation.NewEvaluation(1, 1, 1, "married", []bool{true, false, true}, &evaluation.House{OwnershipStatus: "owned"}, &evaluation.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, "married", []uint8{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: "owned"}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusOK,
 			0,
 		},
 		{
 			"no house ownership status",
-			evaluation.NewEvaluation(1, 1, 1, "married", []bool{true, false, true}, &evaluation.House{}, nil),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, "married", []uint8{1, 0, 1}, &evaluationhttpadapter.House{}, nil),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"no vehicle year",
-			evaluation.NewEvaluation(1, 1, 1, "married", []bool{true, false, true}, &evaluation.House{OwnershipStatus: "owned"}, &evaluation.Vehicle{}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, "married", []uint8{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: "owned"}, &evaluationhttpadapter.Vehicle{}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"invalid age, dependents and income",
-			evaluation.NewEvaluation(-1, -1, -1, "married", []bool{true, false, true}, &evaluation.House{OwnershipStatus: "owned"}, &evaluation.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(-1, -1, -1, "married", []uint8{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: "owned"}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			3,
 		},
 		{
 			"invalid martial status",
-			evaluation.NewEvaluation(1, 1, 1, "unknown", []bool{true, false, true}, &evaluation.House{OwnershipStatus: "owned"}, &evaluation.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, "unknown", []uint8{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: "owned"}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"invalid ownership status",
-			evaluation.NewEvaluation(1, 1, 1, "married", []bool{true, false, true}, &evaluation.House{OwnershipStatus: "unknown"}, &evaluation.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, "married", []uint8{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: "unknown"}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"incomplete risk questions",
-			evaluation.NewEvaluation(1, 1, 1, "married", []bool{true, false}, &evaluation.House{OwnershipStatus: "owned"}, &evaluation.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, "married", []uint8{1, 0}, &evaluationhttpadapter.House{OwnershipStatus: "owned"}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"no required fields",
-			evaluation.Evaluation{},
+			evaluationhttpadapter.Evaluation{},
 			http.StatusBadRequest,
 			5,
 		},

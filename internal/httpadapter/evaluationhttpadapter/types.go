@@ -1,4 +1,4 @@
-package evaluation
+package evaluationhttpadapter
 
 type Evaluation struct {
 	Age           *int     `json:"age" validate:"required,gte=0"`
@@ -6,7 +6,7 @@ type Evaluation struct {
 	House         *House   `json:"house" validate:"omitempty"`
 	Income        *int     `json:"income" validate:"required,gte=0"`
 	MartialStatus string   `json:"marital_status" validate:"required,oneof=single married"`
-	RiskQuestions []bool   `json:"risk_questions" validate:"required,len=3"`
+	RiskQuestions []uint8  `json:"risk_questions" validate:"required,len=3,dive,gte=0,lte=1"`
 	Vehicle       *Vehicle `json:"vehicle" validate:"omitempty"`
 }
 
@@ -18,7 +18,7 @@ type Vehicle struct {
 	Year int `json:"year" validate:"required,gte=0"`
 }
 
-func NewEvaluation(age, dependents, income int, martialStatus string, riskQuestions []bool, house *House, vehicle *Vehicle) Evaluation {
+func NewEvaluation(age, dependents, income int, martialStatus string, riskQuestions []uint8, house *House, vehicle *Vehicle) Evaluation {
 	return Evaluation{
 		Age: func() *int {
 			return &age

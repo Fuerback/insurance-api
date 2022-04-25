@@ -3,7 +3,7 @@ package server
 import (
 	"fmt"
 	"net/http"
-	"useorigin.com/insurance-api/evaluation"
+	"useorigin.com/insurance-api/internal/httpadapter/evaluationhttpadapter"
 )
 
 const (
@@ -13,11 +13,11 @@ const (
 // Server struct
 type Server struct {
 	router  Router
-	handler evaluation.EvaluationHttpHandler
+	handler evaluationhttpadapter.EvaluationHttpHandler
 }
 
 // NewServer New Server constructor
-func NewServer(handler evaluation.EvaluationHttpHandler) *Server {
+func NewServer(handler evaluationhttpadapter.EvaluationHttpHandler) *Server {
 	return &Server{router: NewMuxRouter(), handler: handler}
 }
 
