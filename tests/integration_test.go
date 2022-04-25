@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"testing"
+	"useorigin.com/insurance-api/config/env"
 	"useorigin.com/insurance-api/errors"
 	"useorigin.com/insurance-api/internal/httpadapter/evaluationhttpadapter"
 	"useorigin.com/insurance-api/internal/service/evaluationservice"
@@ -21,7 +22,8 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	serverURL = "http://localhost:8000" //os.Getenv("SERVER_URL")
+	port := env.GetEnvWithDefaultAsString("PORT", ":8000")
+	serverURL = "http://localhost" + port
 	evaluationURL = serverURL + "/evaluation"
 
 	rules := make([]evaluationservice.Rules, 0)

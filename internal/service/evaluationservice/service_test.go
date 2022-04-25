@@ -7,16 +7,16 @@ import (
 )
 
 var (
-	rules   []Rules
 	service InsuranceEvaluation
 )
 
 func setupTest() {
-	rules = make([]Rules, 0)
-	rules = append(rules, NewAutoRules())
-	rules = append(rules, NewHomeRules())
-	rules = append(rules, NewDisabilityRules())
-	rules = append(rules, NewLifeRules())
+	rules := []Rules{
+		NewAutoRules(),
+		NewHomeRules(),
+		NewDisabilityRules(),
+		NewLifeRules(),
+	}
 
 	service = NewService(rules)
 }
@@ -98,7 +98,7 @@ func TestInsurancePlans(t *testing.T) {
 		},
 		{
 			UserInformation{
-				Age:           20,
+				Age:           65,
 				Dependents:    0,
 				Income:        200001,
 				MartialStatus: "single",
@@ -108,10 +108,10 @@ func TestInsurancePlans(t *testing.T) {
 					return &vehicle
 				}(),
 			},
-			"economic",
 			"ineligible",
-			"economic",
-			"economic",
+			"ineligible",
+			"regular",
+			"ineligible",
 		},
 		{
 			UserInformation{},

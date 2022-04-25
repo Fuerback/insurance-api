@@ -3,11 +3,8 @@ package server
 import (
 	"fmt"
 	"net/http"
+	"useorigin.com/insurance-api/config/env"
 	"useorigin.com/insurance-api/internal/httpadapter/evaluationhttpadapter"
-)
-
-const (
-	port = ":8000"
 )
 
 // Server struct
@@ -27,5 +24,5 @@ func (s *Server) Run() {
 	})
 	s.router.POST("/evaluation", s.handler.Evaluation)
 
-	s.router.Serve(port)
+	s.router.Serve(env.GetEnvWithDefaultAsString("PORT", ":8000"))
 }
