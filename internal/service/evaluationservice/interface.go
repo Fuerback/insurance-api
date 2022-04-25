@@ -1,5 +1,9 @@
 package evaluationservice
 
 type InsuranceEvaluation interface {
-	Evaluation()
+	Evaluate(userInformation UserInformation) InsuranceSuggest
+}
+
+type Rules interface {
+	Evaluate(userInformation UserInformation, riskScore *InsuranceScore)
 }

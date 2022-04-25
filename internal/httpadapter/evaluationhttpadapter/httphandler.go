@@ -3,15 +3,18 @@ package evaluationhttpadapter
 import (
 	"encoding/json"
 	"net/http"
+	"useorigin.com/insurance-api/internal/service/evaluationservice"
 
 	"github.com/go-playground/validator"
 	"useorigin.com/insurance-api/errors"
 )
 
-type evaluationHttpHandler struct{}
+type evaluationHttpHandler struct {
+	insuranceEvaluation evaluationservice.InsuranceEvaluation
+}
 
-func NewEvaluationHandler() EvaluationHttpHandler {
-	return &evaluationHttpHandler{}
+func NewEvaluationHandler(insuranceEvaluation evaluationservice.InsuranceEvaluation) EvaluationHttpHandler {
+	return &evaluationHttpHandler{insuranceEvaluation: insuranceEvaluation}
 }
 
 func (c *evaluationHttpHandler) Evaluation(resp http.ResponseWriter, r *http.Request) {
