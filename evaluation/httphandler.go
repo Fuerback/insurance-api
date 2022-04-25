@@ -24,7 +24,7 @@ func (c *evaluationHttpHandler) Evaluation(resp http.ResponseWriter, r *http.Req
 
 	err := json.NewDecoder(r.Body).Decode(evaluation)
 	if err != nil {
-		resp.WriteHeader(http.StatusInternalServerError)
+		resp.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(resp).Encode(errors.NewError("error unmarshalling the request"))
 		return
 	}

@@ -6,7 +6,7 @@ type Evaluation struct {
 	House         *House   `json:"house" validate:"omitempty"`
 	Income        *int     `json:"income" validate:"required,gte=0"`
 	MartialStatus string   `json:"marital_status" validate:"required,oneof=single married"`
-	RiskQuestions []int    `json:"risk_questions" validate:"required,len=3"`
+	RiskQuestions []bool   `json:"risk_questions" validate:"required,len=3"`
 	Vehicle       *Vehicle `json:"vehicle" validate:"omitempty"`
 }
 
@@ -15,5 +15,23 @@ type House struct {
 }
 
 type Vehicle struct {
-	Year *int `json:"year" validate:"required,gte=0"`
+	Year int `json:"year" validate:"required,gte=0"`
+}
+
+func NewEvaluation(age, dependents, income int, martialStatus string, riskQuestions []bool, house *House, vehicle *Vehicle) Evaluation {
+	return Evaluation{
+		Age: func() *int {
+			return &age
+		}(),
+		Dependents: func() *int {
+			return &dependents
+		}(),
+		House: house,
+		Income: func() *int {
+			return &income
+		}(),
+		MartialStatus: martialStatus,
+		RiskQuestions: riskQuestions,
+		Vehicle:       vehicle,
+	}
 }
