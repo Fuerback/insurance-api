@@ -12,7 +12,13 @@ func main() {
 
 	// TODO: add logging and config
 
-	service := evaluationservice.NewService()
+	rules := make([]evaluationservice.Rules, 0)
+	rules = append(rules, evaluationservice.NewAutoRules())
+	rules = append(rules, evaluationservice.NewHomeRules())
+	rules = append(rules, evaluationservice.NewDisabilityRules())
+	rules = append(rules, evaluationservice.NewLifeRules())
+
+	service := evaluationservice.NewService(rules)
 	evaluationHandler := evaluationhttpadapter.NewEvaluationHandler(service)
 
 	s := server.NewServer(evaluationHandler)

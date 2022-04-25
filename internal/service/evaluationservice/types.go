@@ -11,7 +11,7 @@ type UserInformation struct {
 	House         *House
 	Income        int
 	MartialStatus string
-	RiskQuestions []int8
+	RiskQuestions []int
 	Vehicle       *Vehicle
 }
 
@@ -31,7 +31,7 @@ type InsuranceSuggest struct {
 }
 
 type RiskScore struct {
-	RiskPoint  int8
+	RiskPoint  int
 	Ineligible bool
 }
 

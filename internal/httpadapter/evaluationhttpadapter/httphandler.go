@@ -19,7 +19,7 @@ func NewEvaluationHandler(insuranceEvaluation evaluationservice.InsuranceEvaluat
 
 func (c *evaluationHttpHandler) Evaluation(resp http.ResponseWriter, r *http.Request) {
 	resp.Header().Set("Content-type", "application/json")
-	evaluation := new(Evaluation)
+	evaluation := new(UserInformation)
 
 	err := json.NewDecoder(r.Body).Decode(evaluation)
 	if err != nil {
@@ -40,4 +40,9 @@ func (c *evaluationHttpHandler) Evaluation(resp http.ResponseWriter, r *http.Req
 		json.NewEncoder(resp).Encode(error)
 		return
 	}
+
+	result := c.insuranceEvaluation.Evaluate(evaluation.toDomain())
+	resp.WriteHeader(http.StatusOK)
+	json.NewEncoder(resp).Encode(result)
+
 }

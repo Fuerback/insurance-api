@@ -9,7 +9,7 @@ func NewService(rules []Rules) InsuranceEvaluation {
 }
 
 func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceSuggest {
-	var initialRiskScore int8
+	var initialRiskScore int
 	for _, answer := range userInformation.RiskQuestions {
 		initialRiskScore += answer
 	}
@@ -36,10 +36,9 @@ func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceS
 func getSuggest(score RiskScore) string {
 	if score.Ineligible == true {
 		return "ineligible"
-	}
-	if score.RiskPoint <= 0 {
+	} else if score.RiskPoint <= 0 {
 		return "economic"
-	} else if score.RiskPoint >= 1 || score.RiskPoint <= 2 {
+	} else if score.RiskPoint >= 1 && score.RiskPoint <= 2 {
 		return "regular"
 	} else {
 		return "responsible"
