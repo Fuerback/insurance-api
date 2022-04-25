@@ -33,92 +33,92 @@ func TestInsurancePlans(t *testing.T) {
 				Age:        35,
 				Dependents: 1,
 				House: func() *House {
-					house := House{OwnershipStatus: "owned"}
+					house := House{OwnershipStatus: OWNED}
 					return &house
 				}(),
 				Income:        100000,
-				MartialStatus: "single",
+				MartialStatus: SINGLE,
 				RiskQuestions: []int{0, 0, 0},
 				Vehicle: func() *Vehicle {
 					vehicle := Vehicle{Year: 2020}
 					return &vehicle
 				}(),
 			},
-			"economic",
-			"economic",
-			"economic",
-			"economic",
+			ECONOMIC,
+			ECONOMIC,
+			ECONOMIC,
+			ECONOMIC,
 		},
 		{
 			UserInformation{
 				Age:           45,
 				Dependents:    0,
 				Income:        0,
-				MartialStatus: "single",
+				MartialStatus: SINGLE,
 				RiskQuestions: []int{0, 0, 0},
 			},
-			"economic",
-			"ineligible",
-			"ineligible",
-			"ineligible",
+			ECONOMIC,
+			INELIGIBLE,
+			INELIGIBLE,
+			INELIGIBLE,
 		},
 		{
 			UserInformation{
 				Age:           45,
 				Dependents:    0,
 				Income:        0,
-				MartialStatus: "married",
+				MartialStatus: MARRIED,
 				RiskQuestions: []int{1, 1, 1},
 			},
-			"responsible",
-			"ineligible",
-			"ineligible",
-			"ineligible",
+			RESPONSIBLE,
+			INELIGIBLE,
+			INELIGIBLE,
+			INELIGIBLE,
 		},
 		{
 			UserInformation{
 				Age:        35,
 				Dependents: 1,
 				House: func() *House {
-					house := House{OwnershipStatus: "mortgaged"}
+					house := House{OwnershipStatus: MORTGAGED}
 					return &house
 				}(),
 				Income:        200001,
-				MartialStatus: "married",
+				MartialStatus: MARRIED,
 				RiskQuestions: []int{0, 0, 1},
 				Vehicle: func() *Vehicle {
 					vehicle := Vehicle{Year: 2013}
 					return &vehicle
 				}(),
 			},
-			"regular",
-			"economic",
-			"economic",
-			"economic",
+			REGULAR,
+			ECONOMIC,
+			ECONOMIC,
+			ECONOMIC,
 		},
 		{
 			UserInformation{
 				Age:           65,
 				Dependents:    0,
 				Income:        200001,
-				MartialStatus: "single",
+				MartialStatus: SINGLE,
 				RiskQuestions: []int{0, 1, 1},
 				Vehicle: func() *Vehicle {
 					vehicle := Vehicle{Year: 2022}
 					return &vehicle
 				}(),
 			},
-			"ineligible",
-			"ineligible",
-			"regular",
-			"ineligible",
+			INELIGIBLE,
+			INELIGIBLE,
+			REGULAR,
+			INELIGIBLE,
 		},
 		{
 			UserInformation{},
-			"economic",
-			"ineligible",
-			"ineligible",
-			"ineligible",
+			ECONOMIC,
+			INELIGIBLE,
+			INELIGIBLE,
+			INELIGIBLE,
 		},
 	}
 

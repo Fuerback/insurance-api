@@ -14,33 +14,24 @@ func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceS
 		initialRiskScore += answer
 	}
 
+	// rule engine domain
 	riskScore := &InsuranceScore{
-		Auto:       RiskScore{RiskPoint: initialRiskScore},
-		Disability: RiskScore{RiskPoint: initialRiskScore},
-		Home:       RiskScore{RiskPoint: initialRiskScore},
-		Life:       RiskScore{RiskPoint: initialRiskScore},
+		Auto:       NewRiskScore(initialRiskScore),
+		Disability: NewRiskScore(initialRiskScore),
+		Home:       NewRiskScore(initialRiskScore),
+		Life:       NewRiskScore(initialRiskScore),
 	}
+
+	// create a userInformation to rule engine?
 
 	for _, r := range e.rules {
 		r.Evaluate(userInformation, riskScore)
 	}
 
 	return InsuranceSuggest{
-		Auto:       getSuggest(riskScore.Auto),
-		Disability: getSuggest(riskScore.Disability),
-		Home:       getSuggest(riskScore.Home),
-		Life:       getSuggest(riskScore.Life),
-	}
-}
-
-func getSuggest(score RiskScore) string {
-	if score.Ineligible == true {
-		return "ineligible"
-	} else if score.RiskPoint <= 0 {
-		return "economic"
-	} else if score.RiskPoint >= 1 && score.RiskPoint <= 2 {
-		return "regular"
-	} else {
-		return "responsible"
+		Auto:       riskScore.Auto.GetPlan(),
+		Disability: riskScore.Disability.GetPlan(),
+		Home:       riskScore.Home.GetPlan(),
+		Life:       riskScore.Life.GetPlan(),
 	}
 }
