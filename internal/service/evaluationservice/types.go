@@ -1,6 +1,6 @@
 package evaluationservice
 
-import "useorigin.com/insurance-api/internal/service/rules"
+import "useorigin.com/insurance-api/internal/service/rulesengine"
 
 type UserInformation struct {
 	Age           int
@@ -20,8 +20,8 @@ type Vehicle struct {
 	Year int
 }
 
-func (u *UserInformation) toRiskProfile(riskScore int) rules.RiskProfile {
-	return rules.RiskProfile{
+func (u *UserInformation) toRiskProfile(riskScore int) rulesengine.RiskProfile {
+	return rulesengine.RiskProfile{
 		Age:           u.Age,
 		Dependents:    u.Dependents,
 		House:         getRiskProfileHouse(u.House),
@@ -32,18 +32,18 @@ func (u *UserInformation) toRiskProfile(riskScore int) rules.RiskProfile {
 	}
 }
 
-func getRiskProfileVehicle(vehicle *Vehicle) *rules.Vehicle {
+func getRiskProfileVehicle(vehicle *Vehicle) *rulesengine.Vehicle {
 	if vehicle != nil {
-		return &rules.Vehicle{
+		return &rulesengine.Vehicle{
 			Year: vehicle.Year,
 		}
 	}
 	return nil
 }
 
-func getRiskProfileHouse(house *House) *rules.House {
+func getRiskProfileHouse(house *House) *rulesengine.House {
 	if house != nil {
-		return &rules.House{
+		return &rulesengine.House{
 			OwnershipStatus: house.OwnershipStatus,
 		}
 	}

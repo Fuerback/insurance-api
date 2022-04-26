@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"github.com/stretchr/testify/assert"
 	"testing"
-	"useorigin.com/insurance-api/internal/service/rules"
+	"useorigin.com/insurance-api/internal/service/rulesengine"
 )
 
 var (
@@ -27,92 +27,92 @@ func TestInsurancePlans(t *testing.T) {
 				Age:        35,
 				Dependents: 1,
 				House: func() *House {
-					house := House{OwnershipStatus: rules.OWNED}
+					house := House{OwnershipStatus: rulesengine.OWNED}
 					return &house
 				}(),
 				Income:        100000,
-				MartialStatus: rules.SINGLE,
+				MartialStatus: rulesengine.SINGLE,
 				RiskQuestions: []int{0, 0, 0},
 				Vehicle: func() *Vehicle {
 					vehicle := Vehicle{Year: 2020}
 					return &vehicle
 				}(),
 			},
-			rules.ECONOMIC,
-			rules.ECONOMIC,
-			rules.ECONOMIC,
-			rules.ECONOMIC,
+			rulesengine.ECONOMIC,
+			rulesengine.ECONOMIC,
+			rulesengine.ECONOMIC,
+			rulesengine.ECONOMIC,
 		},
 		{
 			UserInformation{
 				Age:           45,
 				Dependents:    0,
 				Income:        0,
-				MartialStatus: rules.SINGLE,
+				MartialStatus: rulesengine.SINGLE,
 				RiskQuestions: []int{0, 0, 0},
 			},
-			rules.ECONOMIC,
-			rules.INELIGIBLE,
-			rules.INELIGIBLE,
-			rules.INELIGIBLE,
+			rulesengine.ECONOMIC,
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
 		},
 		{
 			UserInformation{
 				Age:           45,
 				Dependents:    0,
 				Income:        0,
-				MartialStatus: rules.MARRIED,
+				MartialStatus: rulesengine.MARRIED,
 				RiskQuestions: []int{1, 1, 1},
 			},
-			rules.RESPONSIBLE,
-			rules.INELIGIBLE,
-			rules.INELIGIBLE,
-			rules.INELIGIBLE,
+			rulesengine.RESPONSIBLE,
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
 		},
 		{
 			UserInformation{
 				Age:        35,
 				Dependents: 1,
 				House: func() *House {
-					house := House{OwnershipStatus: rules.MORTGAGED}
+					house := House{OwnershipStatus: rulesengine.MORTGAGED}
 					return &house
 				}(),
 				Income:        200001,
-				MartialStatus: rules.MARRIED,
+				MartialStatus: rulesengine.MARRIED,
 				RiskQuestions: []int{0, 0, 1},
 				Vehicle: func() *Vehicle {
 					vehicle := Vehicle{Year: 2013}
 					return &vehicle
 				}(),
 			},
-			rules.REGULAR,
-			rules.ECONOMIC,
-			rules.ECONOMIC,
-			rules.ECONOMIC,
+			rulesengine.REGULAR,
+			rulesengine.ECONOMIC,
+			rulesengine.ECONOMIC,
+			rulesengine.ECONOMIC,
 		},
 		{
 			UserInformation{
 				Age:           65,
 				Dependents:    0,
 				Income:        200001,
-				MartialStatus: rules.SINGLE,
+				MartialStatus: rulesengine.SINGLE,
 				RiskQuestions: []int{0, 1, 1},
 				Vehicle: func() *Vehicle {
 					vehicle := Vehicle{Year: 2022}
 					return &vehicle
 				}(),
 			},
-			rules.INELIGIBLE,
-			rules.INELIGIBLE,
-			rules.REGULAR,
-			rules.INELIGIBLE,
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
+			rulesengine.REGULAR,
+			rulesengine.INELIGIBLE,
 		},
 		{
 			UserInformation{},
-			rules.ECONOMIC,
-			rules.INELIGIBLE,
-			rules.INELIGIBLE,
-			rules.INELIGIBLE,
+			rulesengine.ECONOMIC,
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
 		},
 	}
 

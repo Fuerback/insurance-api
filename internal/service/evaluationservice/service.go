@@ -1,7 +1,7 @@
 package evaluationservice
 
 import (
-	"useorigin.com/insurance-api/internal/service/rules"
+	"useorigin.com/insurance-api/internal/service/rulesengine"
 )
 
 type EvaluationService struct{}
@@ -13,7 +13,7 @@ func NewService() InsuranceEvaluation {
 func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceSuggest {
 	initialRiskScore := getInitialRiskScore(userInformation)
 
-	evaluation := rules.NewEvaluation(loadRules())
+	evaluation := rulesengine.NewEvaluation(loadRules())
 	profile := evaluation.Evaluate(userInformation.toRiskProfile(initialRiskScore))
 
 	return InsuranceSuggest{
@@ -24,12 +24,12 @@ func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceS
 	}
 }
 
-func loadRules() []rules.Rule {
-	return []rules.Rule{
-		rules.NewAutoRules(),
-		rules.NewHomeRules(),
-		rules.NewDisabilityRules(),
-		rules.NewLifeRules(),
+func loadRules() []rulesengine.Rule {
+	return []rulesengine.Rule{
+		rulesengine.NewAutoRules(),
+		rulesengine.NewHomeRules(),
+		rulesengine.NewDisabilityRules(),
+		rulesengine.NewLifeRules(),
 	}
 }
 

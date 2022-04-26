@@ -1,4 +1,4 @@
-package rules
+package rulesengine
 
 type homeRules struct{}
 

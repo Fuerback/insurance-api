@@ -13,7 +13,7 @@ import (
 	"useorigin.com/insurance-api/errors"
 	"useorigin.com/insurance-api/internal/httpadapter/evaluationhttpadapter"
 	"useorigin.com/insurance-api/internal/service/evaluationservice"
-	"useorigin.com/insurance-api/internal/service/rules"
+	"useorigin.com/insurance-api/internal/service/rulesengine"
 	"useorigin.com/insurance-api/server"
 )
 
@@ -42,49 +42,49 @@ func TestEvaluationInput(t *testing.T) {
 	}{
 		{
 			"single with no house and vehicle",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rules.SINGLE, []int{1, 0, 1}, nil, nil),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.SINGLE, []int{1, 0, 1}, nil, nil),
 			http.StatusOK,
 			0,
 		},
 		{
 			"married with house and vehicle",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rules.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rules.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusOK,
 			0,
 		},
 		{
 			"no house ownership status",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rules.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{}, nil),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{}, nil),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"no vehicle year",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rules.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rules.OWNED}, &evaluationhttpadapter.Vehicle{}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"invalid age, dependents and income",
-			evaluationhttpadapter.NewEvaluation(-1, -1, -1, rules.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rules.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(-1, -1, -1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			3,
 		},
 		{
 			"invalid martial status",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, "unknown", []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rules.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, "unknown", []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"invalid ownership status",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rules.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: "unknown"}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: "unknown"}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"incomplete risk questions",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rules.MARRIED, []int{1, 0}, &evaluationhttpadapter.House{OwnershipStatus: rules.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},

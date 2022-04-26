@@ -1,4 +1,4 @@
-package rules
+package rulesengine
 
 type Rule interface {
 	evaluate(riskProfile RiskProfile, profile *InsuranceProfile)
