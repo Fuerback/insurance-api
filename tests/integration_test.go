@@ -23,11 +23,12 @@ var (
 )
 
 func TestMain(m *testing.M) {
-	port := env.GetEnvWithDefaultAsString("PORT", ":8000")
+	port := env.GetEnvWithDefaultAsString("PORT", ":8080")
 	serverURL = "http://localhost" + port
 	evaluationURL = serverURL + "/evaluation"
 
-	service := insuranceservice.NewService()
+	engine := rulesengine.NewEngine()
+	service := insuranceservice.NewService(engine)
 	handler := insurancehttpadapter.NewEvaluationHandler(service)
 	go server.NewServer(handler).Run()
 

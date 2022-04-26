@@ -99,7 +99,7 @@ func TestAutoRules(t *testing.T) {
 		t.Run(testname, func(t *testing.T) {
 			insuranceScore := NewRiskScore(tt.riskProfile.RiskScore)
 			profile := NewInsuranceProfile(insuranceScore)
-			autoRules := NewAutoRules()
+			autoRules := newAutoRules()
 			autoRules.evaluate(tt.riskProfile, profile)
 
 			assert.Equal(t, tt.plan, profile.Auto.GetPlan())
@@ -192,7 +192,7 @@ func TestDisabilityRules(t *testing.T) {
 		t.Run(testname, func(t *testing.T) {
 			insuranceScore := NewRiskScore(tt.riskProfile.RiskScore)
 			profile := NewInsuranceProfile(insuranceScore)
-			autoRules := NewDisabilityRules()
+			autoRules := newDisabilityRules()
 			autoRules.evaluate(tt.riskProfile, profile)
 
 			assert.Equal(t, tt.plan, profile.Disability.GetPlan())
@@ -280,7 +280,7 @@ func TestLifeRules(t *testing.T) {
 		t.Run(testname, func(t *testing.T) {
 			insuranceScore := NewRiskScore(tt.riskProfile.RiskScore)
 			profile := NewInsuranceProfile(insuranceScore)
-			autoRules := NewLifeRules()
+			autoRules := newLifeRules()
 			autoRules.evaluate(tt.riskProfile, profile)
 
 			assert.Equal(t, tt.plan, profile.Life.GetPlan())
@@ -356,7 +356,7 @@ func TestHomeRules(t *testing.T) {
 		t.Run(testname, func(t *testing.T) {
 			insuranceScore := NewRiskScore(tt.riskProfile.RiskScore)
 			profile := NewInsuranceProfile(insuranceScore)
-			autoRules := NewHomeRules()
+			autoRules := newHomeRules()
 			autoRules.evaluate(tt.riskProfile, profile)
 
 			assert.Equal(t, tt.plan, profile.Home.GetPlan())

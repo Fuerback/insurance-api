@@ -24,5 +24,5 @@ func (s *Server) Run() {
 	})
 	s.router.POST("/evaluation", s.handler.EvaluateUserProfile)
 
-	s.router.Serve(env.GetEnvWithDefaultAsString("PORT", ":8000"))
+	s.router.Serve(env.GetEnvWithDefaultAsString("PORT", ":8080"))
 }

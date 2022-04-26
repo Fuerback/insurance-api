@@ -7,13 +7,12 @@ import (
 )
 
 func TestInsurancePlans(t *testing.T) {
+	engine := NewEngine()
 	var tests = []struct {
-		evaluation                                   *evaluation
 		riskProfile                                  RiskProfile
 		lifePlan, homePlan, autoPlan, disabilityPlan string
 	}{
 		{
-			NewEvaluation([]Rule{NewDisabilityRules(), NewLifeRules()}),
 			RiskProfile{
 				Age:           20,
 				Dependents:    0,
@@ -22,12 +21,11 @@ func TestInsurancePlans(t *testing.T) {
 				RiskScore:     3,
 			},
 			REGULAR,
-			RESPONSIBLE,
-			RESPONSIBLE,
+			INELIGIBLE,
+			INELIGIBLE,
 			REGULAR,
 		},
 		{
-			NewEvaluation([]Rule{NewDisabilityRules(), NewLifeRules(), NewAutoRules(), NewHomeRules()}),
 			RiskProfile{
 				Age:        20,
 				Dependents: 0,
@@ -49,7 +47,6 @@ func TestInsurancePlans(t *testing.T) {
 			ECONOMIC,
 		},
 		{
-			NewEvaluation([]Rule{}),
 			RiskProfile{
 				Age:        20,
 				Dependents: 0,
@@ -75,7 +72,7 @@ func TestInsurancePlans(t *testing.T) {
 	for _, tt := range tests {
 		testname := fmt.Sprintf("%s,%s,%s,%s", tt.lifePlan, tt.homePlan, tt.autoPlan, tt.disabilityPlan)
 		t.Run(testname, func(t *testing.T) {
-			suggest := tt.evaluation.EvaluateRules(tt.riskProfile)
+			suggest := engine.EvaluateRules(tt.riskProfile)
 			assert.Equal(t, tt.lifePlan, suggest.Life.GetPlan())
 			assert.Equal(t, tt.homePlan, suggest.Home.GetPlan())
 			assert.Equal(t, tt.autoPlan, suggest.Auto.GetPlan())

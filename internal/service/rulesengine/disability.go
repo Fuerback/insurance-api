@@ -2,7 +2,7 @@ package rulesengine
 
 type disabilityRules struct{}
 
-func NewDisabilityRules() Rule {
+func newDisabilityRules() Rule {
 	return &disabilityRules{}
 }
 

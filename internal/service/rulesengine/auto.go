@@ -6,7 +6,7 @@ import (
 
 type autoRules struct{}
 
-func NewAutoRules() Rule {
+func newAutoRules() Rule {
 	return &autoRules{}
 }
 

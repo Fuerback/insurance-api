@@ -2,7 +2,7 @@ package rulesengine
 
 type lifeRules struct{}
 
-func NewLifeRules() Rule {
+func newLifeRules() Rule {
 	return &lifeRules{}
 }
 

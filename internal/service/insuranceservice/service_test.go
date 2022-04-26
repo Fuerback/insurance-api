@@ -12,7 +12,8 @@ var (
 )
 
 func setupTest() {
-	service = NewService()
+	evaluation := rulesengine.NewEngine()
+	service = NewService(evaluation)
 }
 
 func TestInsurancePlans(t *testing.T) {

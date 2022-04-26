@@ -2,7 +2,7 @@ package rulesengine
 
 type homeRules struct{}
 
-func NewHomeRules() Rule {
+func newHomeRules() Rule {
 	return &homeRules{}
 }
 
