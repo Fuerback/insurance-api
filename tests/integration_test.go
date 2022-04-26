@@ -115,3 +115,72 @@ func TestEvaluationInput(t *testing.T) {
 		})
 	}
 }
+
+func TestEvaluationResults(t *testing.T) {
+	var tests = []struct {
+		name                         string
+		riskProfile                  insurancehttpadapter.RiskProfileRequest
+		auto, home, life, disability string
+	}{
+		{
+			"young single no car and vehicle one dependent",
+			insurancehttpadapter.NewEvaluation(20, 1, 10000, rulesengine.SINGLE, []int{1, 0, 1}, nil, nil),
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
+			rulesengine.REGULAR,
+			rulesengine.REGULAR,
+		},
+		{
+			"adult single with car and vehicle",
+			insurancehttpadapter.NewEvaluation(31, 0, 1, rulesengine.SINGLE, []int{1, 0, 1}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &insurancehttpadapter.Vehicle{Year: 2015}),
+			rulesengine.REGULAR,
+			rulesengine.REGULAR,
+			rulesengine.REGULAR,
+			rulesengine.REGULAR,
+		},
+		{
+			"no income married mortgaged new car",
+			insurancehttpadapter.NewEvaluation(31, 0, 0, rulesengine.MARRIED, []int{1, 1, 1}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.MORTGAGED}, &insurancehttpadapter.Vehicle{Year: 2020}),
+			rulesengine.RESPONSIBLE,
+			rulesengine.RESPONSIBLE,
+			rulesengine.RESPONSIBLE,
+			rulesengine.INELIGIBLE,
+		},
+		{
+			"high income single owned old car",
+			insurancehttpadapter.NewEvaluation(41, 1, 205000, rulesengine.SINGLE, []int{0, 0, 0}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &insurancehttpadapter.Vehicle{Year: 2010}),
+			rulesengine.ECONOMIC,
+			rulesengine.ECONOMIC,
+			rulesengine.ECONOMIC,
+			rulesengine.ECONOMIC,
+		},
+		{
+			"old married mortgaged old car",
+			insurancehttpadapter.NewEvaluation(61, 3, 150000, rulesengine.MARRIED, []int{1, 0, 0}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.MORTGAGED}, &insurancehttpadapter.Vehicle{Year: 2010}),
+			rulesengine.REGULAR,
+			rulesengine.REGULAR,
+			rulesengine.INELIGIBLE,
+			rulesengine.INELIGIBLE,
+		},
+	}
+
+	for _, tt := range tests {
+		testname := fmt.Sprintf("%s", tt.name)
+		t.Run(testname, func(t *testing.T) {
+			payload, _ := json.Marshal(tt.riskProfile)
+			resp, err := http.Post(evaluationURL, "", bytes.NewBuffer(payload))
+
+			assert.Nilf(t, err, "error when evaluation %s: %s", tt.name, err)
+			assert.Equal(t, http.StatusOK, resp.StatusCode)
+
+			var response insuranceservice.InsuranceSuggest
+			b, _ := ioutil.ReadAll(resp.Body)
+			_ = json.Unmarshal(b, &response)
+
+			assert.Equal(t, tt.home, response.Home)
+			assert.Equal(t, tt.life, response.Life)
+			assert.Equal(t, tt.auto, response.Auto)
+			assert.Equal(t, tt.disability, response.Disability)
+		})
+	}
+}
