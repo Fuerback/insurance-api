@@ -5,5 +5,5 @@ type Rule interface {
 }
 
 type Evaluation interface {
-	Evaluate(riskProfile RiskProfile) InsuranceProfile
+	EvaluateRules(riskProfile RiskProfile) InsuranceProfile
 }

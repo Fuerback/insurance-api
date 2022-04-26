@@ -14,7 +14,7 @@ func (e *InsuranceService) EvaluateUserProfile(riskProfile RiskProfile) Insuranc
 	initialRiskScore := getInitialRiskScore(riskProfile)
 
 	evaluation := rulesengine.NewEvaluation(loadRules())
-	profile := evaluation.Evaluate(riskProfile.toEngineRiskProfile(initialRiskScore))
+	profile := evaluation.EvaluateRules(riskProfile.toEngineRiskProfile(initialRiskScore))
 
 	return InsuranceSuggest{
 		Auto:       profile.Auto.GetPlan(),
