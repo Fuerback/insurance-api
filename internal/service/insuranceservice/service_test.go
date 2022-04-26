@@ -1,4 +1,4 @@
-package evaluationservice
+package insuranceservice
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	service InsuranceEvaluation
+	service Insurance
 )
 
 func setupTest() {
@@ -19,11 +19,11 @@ func TestInsurancePlans(t *testing.T) {
 	setupTest()
 
 	var tests = []struct {
-		userInformation                              UserInformation
+		userInformation                              RiskProfile
 		lifePlan, homePlan, autoPlan, disabilityPlan string
 	}{
 		{
-			UserInformation{
+			RiskProfile{
 				Age:        35,
 				Dependents: 1,
 				House: func() *House {
@@ -44,7 +44,7 @@ func TestInsurancePlans(t *testing.T) {
 			rulesengine.ECONOMIC,
 		},
 		{
-			UserInformation{
+			RiskProfile{
 				Age:           45,
 				Dependents:    0,
 				Income:        0,
@@ -57,7 +57,7 @@ func TestInsurancePlans(t *testing.T) {
 			rulesengine.INELIGIBLE,
 		},
 		{
-			UserInformation{
+			RiskProfile{
 				Age:           45,
 				Dependents:    0,
 				Income:        0,
@@ -70,7 +70,7 @@ func TestInsurancePlans(t *testing.T) {
 			rulesengine.INELIGIBLE,
 		},
 		{
-			UserInformation{
+			RiskProfile{
 				Age:        35,
 				Dependents: 1,
 				House: func() *House {
@@ -91,7 +91,7 @@ func TestInsurancePlans(t *testing.T) {
 			rulesengine.ECONOMIC,
 		},
 		{
-			UserInformation{
+			RiskProfile{
 				Age:           65,
 				Dependents:    0,
 				Income:        200001,
@@ -108,7 +108,7 @@ func TestInsurancePlans(t *testing.T) {
 			rulesengine.INELIGIBLE,
 		},
 		{
-			UserInformation{},
+			RiskProfile{},
 			rulesengine.ECONOMIC,
 			rulesengine.INELIGIBLE,
 			rulesengine.INELIGIBLE,
@@ -119,7 +119,7 @@ func TestInsurancePlans(t *testing.T) {
 	for _, tt := range tests {
 		testname := fmt.Sprintf("%s,%s,%s,%s", tt.lifePlan, tt.homePlan, tt.autoPlan, tt.disabilityPlan)
 		t.Run(testname, func(t *testing.T) {
-			suggest := service.Evaluate(tt.userInformation)
+			suggest := service.EvaluateUserProfile(tt.userInformation)
 			assert.Equal(t, tt.lifePlan, suggest.Life)
 			assert.Equal(t, tt.homePlan, suggest.Home)
 			assert.Equal(t, tt.autoPlan, suggest.Auto)

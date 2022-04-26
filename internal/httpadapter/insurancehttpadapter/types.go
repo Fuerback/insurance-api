@@ -1,8 +1,8 @@
-package evaluationhttpadapter
+package insurancehttpadapter
 
-import "useorigin.com/insurance-api/internal/service/evaluationservice"
+import "useorigin.com/insurance-api/internal/service/insuranceservice"
 
-type UserInformation struct {
+type RiskProfileRequest struct {
 	Age           *int     `json:"age" validate:"required,gte=0"`
 	Dependents    *int     `json:"dependents" validate:"required,gte=0"`
 	House         *House   `json:"house" validate:"omitempty"`
@@ -20,8 +20,8 @@ type Vehicle struct {
 	Year int `json:"year" validate:"required,gte=0"`
 }
 
-func (u *UserInformation) toDomain() evaluationservice.UserInformation {
-	return evaluationservice.UserInformation{
+func (u *RiskProfileRequest) toDomain() insuranceservice.RiskProfile {
+	return insuranceservice.RiskProfile{
 		Age:           *u.Age,
 		Dependents:    *u.Dependents,
 		House:         getDomainHouse(u.House),
@@ -32,26 +32,26 @@ func (u *UserInformation) toDomain() evaluationservice.UserInformation {
 	}
 }
 
-func getDomainVehicle(vehicle *Vehicle) *evaluationservice.Vehicle {
+func getDomainVehicle(vehicle *Vehicle) *insuranceservice.Vehicle {
 	if vehicle != nil {
-		return &evaluationservice.Vehicle{
+		return &insuranceservice.Vehicle{
 			Year: vehicle.Year,
 		}
 	}
 	return nil
 }
 
-func getDomainHouse(house *House) *evaluationservice.House {
+func getDomainHouse(house *House) *insuranceservice.House {
 	if house != nil {
-		return &evaluationservice.House{
+		return &insuranceservice.House{
 			OwnershipStatus: house.OwnershipStatus,
 		}
 	}
 	return nil
 }
 
-func NewEvaluation(age, dependents, income int, martialStatus string, riskQuestions []int, house *House, vehicle *Vehicle) UserInformation {
-	return UserInformation{
+func NewEvaluation(age, dependents, income int, martialStatus string, riskQuestions []int, house *House, vehicle *Vehicle) RiskProfileRequest {
+	return RiskProfileRequest{
 		Age: func() *int {
 			return &age
 		}(),

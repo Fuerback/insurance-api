@@ -11,8 +11,8 @@ import (
 	"testing"
 	"useorigin.com/insurance-api/config/env"
 	"useorigin.com/insurance-api/errors"
-	"useorigin.com/insurance-api/internal/httpadapter/evaluationhttpadapter"
-	"useorigin.com/insurance-api/internal/service/evaluationservice"
+	"useorigin.com/insurance-api/internal/httpadapter/insurancehttpadapter"
+	"useorigin.com/insurance-api/internal/service/insuranceservice"
 	"useorigin.com/insurance-api/internal/service/rulesengine"
 	"useorigin.com/insurance-api/server"
 )
@@ -27,8 +27,8 @@ func TestMain(m *testing.M) {
 	serverURL = "http://localhost" + port
 	evaluationURL = serverURL + "/evaluation"
 
-	service := evaluationservice.NewService()
-	handler := evaluationhttpadapter.NewEvaluationHandler(service)
+	service := insuranceservice.NewService()
+	handler := insurancehttpadapter.NewEvaluationHandler(service)
 	go server.NewServer(handler).Run()
 
 	os.Exit(m.Run())
@@ -37,60 +37,60 @@ func TestMain(m *testing.M) {
 func TestEvaluationInput(t *testing.T) {
 	var tests = []struct {
 		name                string
-		eval                evaluationhttpadapter.UserInformation
+		eval                insurancehttpadapter.RiskProfileRequest
 		want, errorMessages int
 	}{
 		{
 			"single with no house and vehicle",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.SINGLE, []int{1, 0, 1}, nil, nil),
+			insurancehttpadapter.NewEvaluation(1, 1, 1, rulesengine.SINGLE, []int{1, 0, 1}, nil, nil),
 			http.StatusOK,
 			0,
 		},
 		{
 			"married with house and vehicle",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			insurancehttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &insurancehttpadapter.Vehicle{Year: 2015}),
 			http.StatusOK,
 			0,
 		},
 		{
 			"no house ownership status",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{}, nil),
+			insurancehttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &insurancehttpadapter.House{}, nil),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"no vehicle year",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{}),
+			insurancehttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &insurancehttpadapter.Vehicle{}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"invalid age, dependents and income",
-			evaluationhttpadapter.NewEvaluation(-1, -1, -1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			insurancehttpadapter.NewEvaluation(-1, -1, -1, rulesengine.MARRIED, []int{1, 0, 1}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &insurancehttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			3,
 		},
 		{
 			"invalid martial status",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, "unknown", []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			insurancehttpadapter.NewEvaluation(1, 1, 1, "unknown", []int{1, 0, 1}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &insurancehttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"invalid ownership status",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &evaluationhttpadapter.House{OwnershipStatus: "unknown"}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			insurancehttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0, 1}, &insurancehttpadapter.House{OwnershipStatus: "unknown"}, &insurancehttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"incomplete risk questions",
-			evaluationhttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0}, &evaluationhttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &evaluationhttpadapter.Vehicle{Year: 2015}),
+			insurancehttpadapter.NewEvaluation(1, 1, 1, rulesengine.MARRIED, []int{1, 0}, &insurancehttpadapter.House{OwnershipStatus: rulesengine.OWNED}, &insurancehttpadapter.Vehicle{Year: 2015}),
 			http.StatusBadRequest,
 			1,
 		},
 		{
 			"no required fields",
-			evaluationhttpadapter.UserInformation{},
+			insurancehttpadapter.RiskProfileRequest{},
 			http.StatusBadRequest,
 			5,
 		},

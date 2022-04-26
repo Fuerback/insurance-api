@@ -1,20 +1,20 @@
-package evaluationservice
+package insuranceservice
 
 import (
 	"useorigin.com/insurance-api/internal/service/rulesengine"
 )
 
-type EvaluationService struct{}
+type InsuranceService struct{}
 
-func NewService() InsuranceEvaluation {
-	return &EvaluationService{}
+func NewService() Insurance {
+	return &InsuranceService{}
 }
 
-func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceSuggest {
-	initialRiskScore := getInitialRiskScore(userInformation)
+func (e *InsuranceService) EvaluateUserProfile(riskProfile RiskProfile) InsuranceSuggest {
+	initialRiskScore := getInitialRiskScore(riskProfile)
 
 	evaluation := rulesengine.NewEvaluation(loadRules())
-	profile := evaluation.Evaluate(userInformation.toRiskProfile(initialRiskScore))
+	profile := evaluation.Evaluate(riskProfile.toEngineRiskProfile(initialRiskScore))
 
 	return InsuranceSuggest{
 		Auto:       profile.Auto.GetPlan(),
@@ -33,7 +33,7 @@ func loadRules() []rulesengine.Rule {
 	}
 }
 
-func getInitialRiskScore(userInformation UserInformation) int {
+func getInitialRiskScore(userInformation RiskProfile) int {
 	var initialRiskScore int
 	for _, answer := range userInformation.RiskQuestions {
 		initialRiskScore += answer

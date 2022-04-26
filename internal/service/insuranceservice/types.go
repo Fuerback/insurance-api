@@ -1,8 +1,8 @@
-package evaluationservice
+package insuranceservice
 
 import "useorigin.com/insurance-api/internal/service/rulesengine"
 
-type UserInformation struct {
+type RiskProfile struct {
 	Age           int
 	Dependents    int
 	House         *House
@@ -20,7 +20,7 @@ type Vehicle struct {
 	Year int
 }
 
-func (u *UserInformation) toRiskProfile(riskScore int) rulesengine.RiskProfile {
+func (u *RiskProfile) toEngineRiskProfile(riskScore int) rulesengine.RiskProfile {
 	return rulesengine.RiskProfile{
 		Age:           u.Age,
 		Dependents:    u.Dependents,
