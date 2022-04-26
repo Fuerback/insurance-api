@@ -17,7 +17,6 @@ type RiskProfile struct {
 	House         *House
 	Income        int
 	MartialStatus string
-	RiskQuestions []int
 	Vehicle       *Vehicle
 	RiskScore     int
 }

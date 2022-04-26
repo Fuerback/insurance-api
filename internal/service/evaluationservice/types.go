@@ -27,7 +27,6 @@ func (u *UserInformation) toRiskProfile(riskScore int) rules.RiskProfile {
 		House:         getRiskProfileHouse(u.House),
 		Income:        u.Income,
 		MartialStatus: u.MartialStatus,
-		RiskQuestions: u.RiskQuestions,
 		Vehicle:       getRiskProfileVehicle(u.Vehicle),
 		RiskScore:     riskScore,
 	}
