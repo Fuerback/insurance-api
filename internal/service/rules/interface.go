@@ -1,8 +1,9 @@
 package rules
 
-import "useorigin.com/insurance-api/internal/service/evaluationservice"
+type Rule interface {
+	evaluate(riskProfile RiskProfile, profile *InsuranceProfile)
+}
 
-type Rules interface {
-	// TODO: remove evaluationservice dependency
-	Evaluate(userInformation evaluationservice.UserInformation, riskScore *InsuranceScore)
+type Evaluation interface {
+	Evaluate(riskProfile RiskProfile) InsuranceProfile
 }

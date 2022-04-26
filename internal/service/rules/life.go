@@ -1,31 +1,29 @@
 package rules
 
-import "useorigin.com/insurance-api/internal/service/evaluationservice"
+type lifeRules struct{}
 
-type LifeRules struct{}
-
-func NewLifeRules() Rules {
-	return &LifeRules{}
+func NewLifeRules() Rule {
+	return &lifeRules{}
 }
 
-func (r *LifeRules) Evaluate(userInformation evaluationservice.UserInformation, riskScore *InsuranceScore) {
-	if userInformation.Age > 60 {
-		riskScore.Life.Ineligible = true
+func (r *lifeRules) evaluate(riskProfile RiskProfile, profile *InsuranceProfile) {
+	if riskProfile.Age > 60 {
+		profile.Life.Ineligible = true
 		return
 	}
-	if userInformation.Dependents > 0 {
-		riskScore.Life.RiskScore = riskScore.Life.RiskScore + 1
+	if riskProfile.Dependents > 0 {
+		profile.Life.RiskScore = profile.Life.RiskScore + 1
 	}
-	if userInformation.Age < 30 {
-		riskScore.Life.RiskScore = riskScore.Life.RiskScore - 2
+	if riskProfile.Age < 30 {
+		profile.Life.RiskScore = profile.Life.RiskScore - 2
 	}
-	if userInformation.Age >= 30 && userInformation.Age <= 40 {
-		riskScore.Life.RiskScore = riskScore.Life.RiskScore - 1
+	if riskProfile.Age >= 30 && riskProfile.Age <= 40 {
+		profile.Life.RiskScore = profile.Life.RiskScore - 1
 	}
-	if userInformation.Income > 200000 {
-		riskScore.Life.RiskScore = riskScore.Life.RiskScore - 1
+	if riskProfile.Income > 200000 {
+		profile.Life.RiskScore = profile.Life.RiskScore - 1
 	}
-	if userInformation.MartialStatus == MARRIED {
-		riskScore.Life.RiskScore = riskScore.Life.RiskScore + 1
+	if riskProfile.MartialStatus == MARRIED {
+		profile.Life.RiskScore = profile.Life.RiskScore + 1
 	}
 }

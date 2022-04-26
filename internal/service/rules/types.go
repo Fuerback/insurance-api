@@ -11,16 +11,35 @@ const (
 	OWNED       = "owned"
 )
 
-type insuranceProfile struct {
+type RiskProfile struct {
+	Age           int
+	Dependents    int
+	House         *House
+	Income        int
+	MartialStatus string
+	RiskQuestions []int
+	Vehicle       *Vehicle
+	RiskScore     int
+}
+
+type House struct {
+	OwnershipStatus string
+}
+
+type Vehicle struct {
+	Year int
+}
+
+type riskScore struct {
 	RiskScore  int
 	Ineligible bool
 }
 
-func NewInsuranceProfile(riskPoint int) insuranceProfile {
-	return insuranceProfile{RiskScore: riskPoint}
+func NewRiskScore(score int) riskScore {
+	return riskScore{RiskScore: score}
 }
 
-func (rc *insuranceProfile) GetPlan() string {
+func (rc *riskScore) GetPlan() string {
 	if rc.Ineligible == true {
 		return INELIGIBLE
 	} else if rc.RiskScore <= 0 {
@@ -32,9 +51,13 @@ func (rc *insuranceProfile) GetPlan() string {
 	}
 }
 
-type InsuranceScore struct {
-	Auto       insuranceProfile
-	Disability insuranceProfile
-	Home       insuranceProfile
-	Life       insuranceProfile
+type InsuranceProfile struct {
+	Auto       riskScore
+	Disability riskScore
+	Home       riskScore
+	Life       riskScore
+}
+
+func NewInsuranceProfile(score riskScore) *InsuranceProfile {
+	return &InsuranceProfile{Auto: score, Disability: score, Home: score, Life: score}
 }

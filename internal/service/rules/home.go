@@ -1,28 +1,26 @@
 package rules
 
-import "useorigin.com/insurance-api/internal/service/evaluationservice"
+type homeRules struct{}
 
-type HomeRules struct{}
-
-func NewHomeRules() Rules {
-	return &HomeRules{}
+func NewHomeRules() Rule {
+	return &homeRules{}
 }
 
-func (r *HomeRules) Evaluate(userInformation evaluationservice.UserInformation, riskScore *InsuranceScore) {
-	if userInformation.House == nil {
-		riskScore.Home.Ineligible = true
+func (r *homeRules) evaluate(riskProfile RiskProfile, profile *InsuranceProfile) {
+	if riskProfile.House == nil {
+		profile.Home.Ineligible = true
 		return
 	}
-	if userInformation.Age < 30 {
-		riskScore.Home.RiskScore = riskScore.Home.RiskScore - 2
+	if riskProfile.Age < 30 {
+		profile.Home.RiskScore = profile.Home.RiskScore - 2
 	}
-	if userInformation.Age >= 30 && userInformation.Age <= 40 {
-		riskScore.Home.RiskScore = riskScore.Home.RiskScore - 1
+	if riskProfile.Age >= 30 && riskProfile.Age <= 40 {
+		profile.Home.RiskScore = profile.Home.RiskScore - 1
 	}
-	if userInformation.Income > 200000 {
-		riskScore.Home.RiskScore = riskScore.Home.RiskScore - 1
+	if riskProfile.Income > 200000 {
+		profile.Home.RiskScore = profile.Home.RiskScore - 1
 	}
-	if userInformation.House != nil && userInformation.House.OwnershipStatus == MORTGAGED {
-		riskScore.Home.RiskScore = riskScore.Home.RiskScore + 1
+	if riskProfile.House != nil && riskProfile.House.OwnershipStatus == MORTGAGED {
+		profile.Home.RiskScore = profile.Home.RiskScore + 1
 	}
 }

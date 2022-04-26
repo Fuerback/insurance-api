@@ -2,30 +2,29 @@ package rules
 
 import (
 	"time"
-	"useorigin.com/insurance-api/internal/service/evaluationservice"
 )
 
-type AutoRules struct{}
+type autoRules struct{}
 
-func NewAutoRules() Rules {
-	return &AutoRules{}
+func NewAutoRules() Rule {
+	return &autoRules{}
 }
 
-func (r *AutoRules) Evaluate(userInformation evaluationservice.UserInformation, riskScore *InsuranceScore) {
-	if userInformation.Vehicle == nil {
-		riskScore.Auto.Ineligible = true
+func (r *autoRules) evaluate(riskProfile RiskProfile, profile *InsuranceProfile) {
+	if riskProfile.Vehicle == nil {
+		profile.Auto.Ineligible = true
 		return
 	}
-	if userInformation.Age < 30 {
-		riskScore.Auto.RiskScore = riskScore.Auto.RiskScore - 2
+	if riskProfile.Age < 30 {
+		profile.Auto.RiskScore = profile.Auto.RiskScore - 2
 	}
-	if userInformation.Age >= 30 && userInformation.Age <= 40 {
-		riskScore.Auto.RiskScore = riskScore.Auto.RiskScore - 1
+	if riskProfile.Age >= 30 && riskProfile.Age <= 40 {
+		profile.Auto.RiskScore = profile.Auto.RiskScore - 1
 	}
-	if userInformation.Income > 200000 {
-		riskScore.Auto.RiskScore = riskScore.Auto.RiskScore - 1
+	if riskProfile.Income > 200000 {
+		profile.Auto.RiskScore = profile.Auto.RiskScore - 1
 	}
-	if userInformation.Vehicle != nil && userInformation.Vehicle.Year >= time.Now().Year()-5 {
-		riskScore.Auto.RiskScore = riskScore.Auto.RiskScore + 1
+	if riskProfile.Vehicle != nil && riskProfile.Vehicle.Year >= time.Now().Year()-5 {
+		profile.Auto.RiskScore = profile.Auto.RiskScore + 1
 	}
 }

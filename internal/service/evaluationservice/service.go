@@ -13,30 +13,19 @@ func NewService() InsuranceEvaluation {
 func (e *EvaluationService) Evaluate(userInformation UserInformation) InsuranceSuggest {
 	initialRiskScore := getInitialRiskScore(userInformation)
 
-	// rule engine domain
-	riskScore := &rules.InsuranceScore{
-		Auto:       rules.NewInsuranceProfile(initialRiskScore),
-		Disability: rules.NewInsuranceProfile(initialRiskScore),
-		Home:       rules.NewInsuranceProfile(initialRiskScore),
-		Life:       rules.NewInsuranceProfile(initialRiskScore),
-	}
-
-	// TODO: send 'rules1' and userProfile to GetInsuranceSuggest, it have to be responsible to Evaluate all rules and return an InsuranceSuggest (rules package can't have the service dependency)
-	rules1 := loadRules()
-	for _, r := range rules1 {
-		r.Evaluate(userInformation, riskScore)
-	}
+	evaluation := rules.NewEvaluation(loadRules())
+	profile := evaluation.Evaluate(userInformation.toRiskProfile(initialRiskScore))
 
 	return InsuranceSuggest{
-		Auto:       riskScore.Auto.GetPlan(),
-		Disability: riskScore.Disability.GetPlan(),
-		Home:       riskScore.Home.GetPlan(),
-		Life:       riskScore.Life.GetPlan(),
+		Auto:       profile.Auto.GetPlan(),
+		Disability: profile.Disability.GetPlan(),
+		Home:       profile.Home.GetPlan(),
+		Life:       profile.Life.GetPlan(),
 	}
 }
 
-func loadRules() []rules.Rules {
-	return []rules.Rules{
+func loadRules() []rules.Rule {
+	return []rules.Rule{
 		rules.NewAutoRules(),
 		rules.NewHomeRules(),
 		rules.NewDisabilityRules(),

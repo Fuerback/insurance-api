@@ -1,38 +1,36 @@
 package rules
 
-import "useorigin.com/insurance-api/internal/service/evaluationservice"
+type disabilityRules struct{}
 
-type DisabilityRules struct{}
-
-func NewDisabilityRules() Rules {
-	return &DisabilityRules{}
+func NewDisabilityRules() Rule {
+	return &disabilityRules{}
 }
 
-func (r *DisabilityRules) Evaluate(userInformation evaluationservice.UserInformation, riskScore *InsuranceScore) {
-	if userInformation.Income == 0 {
-		riskScore.Disability.Ineligible = true
+func (r *disabilityRules) evaluate(riskProfile RiskProfile, profile *InsuranceProfile) {
+	if riskProfile.Income == 0 {
+		profile.Disability.Ineligible = true
 		return
 	}
-	if userInformation.Age > 60 {
-		riskScore.Disability.Ineligible = true
+	if riskProfile.Age > 60 {
+		profile.Disability.Ineligible = true
 		return
 	}
-	if userInformation.Dependents > 0 {
-		riskScore.Disability.RiskScore = riskScore.Disability.RiskScore + 1
+	if riskProfile.Dependents > 0 {
+		profile.Disability.RiskScore = profile.Disability.RiskScore + 1
 	}
-	if userInformation.Age < 30 {
-		riskScore.Disability.RiskScore = riskScore.Disability.RiskScore - 2
+	if riskProfile.Age < 30 {
+		profile.Disability.RiskScore = profile.Disability.RiskScore - 2
 	}
-	if userInformation.Age >= 30 && userInformation.Age <= 40 {
-		riskScore.Disability.RiskScore = riskScore.Disability.RiskScore - 1
+	if riskProfile.Age >= 30 && riskProfile.Age <= 40 {
+		profile.Disability.RiskScore = profile.Disability.RiskScore - 1
 	}
-	if userInformation.Income > 200000 {
-		riskScore.Disability.RiskScore = riskScore.Disability.RiskScore - 1
+	if riskProfile.Income > 200000 {
+		profile.Disability.RiskScore = profile.Disability.RiskScore - 1
 	}
-	if userInformation.House != nil && userInformation.House.OwnershipStatus == MORTGAGED {
-		riskScore.Disability.RiskScore = riskScore.Disability.RiskScore + 1
+	if riskProfile.House != nil && riskProfile.House.OwnershipStatus == MORTGAGED {
+		profile.Disability.RiskScore = profile.Disability.RiskScore + 1
 	}
-	if userInformation.MartialStatus == MARRIED {
-		riskScore.Disability.RiskScore = riskScore.Disability.RiskScore - 1
+	if riskProfile.MartialStatus == MARRIED {
+		profile.Disability.RiskScore = profile.Disability.RiskScore - 1
 	}
 }
